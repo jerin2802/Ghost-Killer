@@ -1,0 +1,442 @@
+#include "iGraphics.h"
+#include "bitmap_loader.h"
+
+void showable(void);
+void read(void);
+
+int len =0;
+int point;
+char nameShow[10];
+char pname[100];
+char str[20],str2[20];
+int mode = 1;
+
+
+
+int image[10];
+bool start = true;
+bool game = false;
+bool gamestart = false;
+bool gameover = false;
+bool menu = true;
+int hscore = true;
+int option = false;
+int about = false;
+int woodx = 600;
+int woody = 30;
+int pumpkinx = 600;
+int pumpkiny = 100;
+int pumpkinxspeed = 10;
+int pumpkinyspeed = 7;
+int menupage;
+int instructionpage;
+int aboutpage;
+int button[50];
+int buttonview[6] = {true, true, true, true, true,true};
+int buttonwidth = 210;
+int buttonheight = 30;
+int x = 300, y = 300, r = 20;
+int win_b = 400, win_l = 400;
+float delay = 0;
+void iDraw()
+{
+	iClear();
+	if (menu)
+	{
+		iShowImage(0, 0, 1200, 690, menupage);
+
+		if (buttonview[1])
+			iShowImage(80, 300, buttonwidth, buttonheight, button[0]);
+		if (!buttonview[1])
+			iShowImage(80, 300, buttonwidth, buttonheight, button[5]);
+		if (buttonview[2])
+			iShowImage(80, 250, buttonwidth, buttonheight, button[1]);
+		if (!buttonview[2])
+			iShowImage(80, 250, buttonwidth, buttonheight, button[6]);
+		if (buttonview[3])
+			iShowImage(80, 200, buttonwidth, buttonheight, button[2]);
+		if (!buttonview[3])
+			iShowImage(80, 200, buttonwidth, buttonheight, button[7]);
+		if (buttonview[4])
+			iShowImage(80, 150, buttonwidth, buttonheight, button[3]);
+		if (!buttonview[4])
+			iShowImage(80, 150, buttonwidth, buttonheight, button[8]);
+		if (buttonview[5])
+			iShowImage(80, 100, buttonwidth, buttonheight, button[4]);
+		if (!buttonview[5])
+			iShowImage(80, 100, buttonwidth, buttonheight, button[9]);
+	}
+	
+	if (option)
+		iShowImage(0, 0, 1200, 690, instructionpage);
+	if (about)
+		iShowImage(0, 0, 1200, 690, aboutpage);
+	if (game)
+        {
+		iShowImage(0, 0, 1200, 690, image[0]);
+		iShowImage(woodx, woody, 250, 40, image[1]);
+		iShowImage(pumpkinx, pumpkiny, 80, 80, image[2]);
+	}
+	if (gameover)
+	{
+		iShowImage(0, 0, 1200, 690, image[3]);
+	}
+}
+
+void iPassiveMouse(int mx, int my)
+{
+	if (my >= 300 && my <= 330)
+	{
+		if (mx >= 80 && mx <= 290)
+		{
+			buttonview[1] = false;
+		}
+		else
+			buttonview[1] = true;
+	}
+	else
+		buttonview[1] = true;
+	if (my >= 250 && my <= 280)
+	{
+		if (mx >= 80 && mx <= 290)
+		{
+			buttonview[2] = false;
+		}
+		else
+			buttonview[2] = true;
+	}
+	else
+		buttonview[2] = true;
+	if (my >= 200 && my <= 230)
+	{
+		if (mx >= 80 && mx <= 290)
+		{
+
+			buttonview[3] = false;
+		}
+		else
+			buttonview[3] = true;
+	}
+	else
+		buttonview[3] = true;
+	if (my >= 150 && my <= 180)
+	{
+		if (mx >= 80 && mx <= 290)
+		{
+	    	buttonview[4] = false;
+		}
+		else
+			buttonview[4] = true;
+	}
+	else
+		buttonview[4] = true;
+	if (my >= 100 && my <= 130)
+	{
+
+		if (mx >= 80 && mx <= 290)
+		{
+	    	buttonview[5] = false;
+		}
+		else
+			buttonview[5] = true;
+	}
+	else
+		buttonview[5] = true;
+
+	woodx=mx;
+}
+void iMouseMove(int mx, int my)
+{
+}
+void iMouse(int button, int state, int mx, int my)
+{
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+	{
+			printf("x = %d, y= %d\n",mx,my);
+	}
+
+	if (my >= 300 && my <= 330)
+	{
+		if (mx >= 80 && mx <= 290)
+		{
+			if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+			{
+              	menu = false;
+				game = true;
+				hscore = false;
+				option = false;
+				about = false;		
+			}
+		}
+	}
+	if (my >= 250 && my <= 280)
+	{
+		if (mx >= 80 && mx <= 290)
+		{
+			if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+			{
+              	menu = false;
+				hscore = true;
+				option = false;
+				about = false;
+				game = false;
+			}
+		}
+	}
+	if (my >= 200 && my <= 230)
+	{
+		if (mx >= 80 && mx <= 290)
+		{
+			if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+			{
+				menu = false;
+				game = false;
+				hscore = false;
+				option = true;
+				about = false;		
+			}
+		}
+	}
+	if (my >= 150 && my <= 180)
+	{
+		if (mx >= 80 && mx <= 290)
+		{
+			if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+			{
+				menu = false;
+				hscore= false;
+				game = false;
+				about = true;
+				option = false;
+			}
+		}
+	}
+	if (my >= 100 && my <= 130)
+	{
+		if (mx >= 80 && mx <= 290)
+		{
+			if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+				exit(0);
+		}
+	}
+}
+void iKeyboard(unsigned char key)
+{	
+	if (key == 's')
+	{
+		gamestart = true;
+	}
+}
+void iSpecialKeyboard(unsigned char key)
+{
+	if (key == GLUT_KEY_END)
+	{
+		exit(0);
+	}
+	if (key == GLUT_KEY_LEFT)
+	{
+		if (woodx > 0)
+			woodx -= 30;
+	}
+	if (key == GLUT_KEY_RIGHT)
+	{
+		if (woodx <= 1200-210)
+		 woodx += 30;
+	}
+}
+void ballchange()
+{
+	if (gamestart)
+	{
+		pumpkinx += pumpkinxspeed;
+		pumpkiny += pumpkinyspeed;
+		if (pumpkinx >= 1200-50 || pumpkinx <= 0)
+		{
+			pumpkinxspeed *= (-1);
+		}
+		else if (pumpkiny >= 690-45)
+		{
+			pumpkinyspeed *= (-1);
+		}
+		else if (pumpkiny <= 0)
+		{
+			gameover = true;
+			game = false;
+		}
+		if (pumpkinx >= woodx && pumpkinx <= woodx + 210 && pumpkiny >= woody+10 && pumpkiny <= woody + 35)
+		{
+			pumpkinyspeed *= (-1);
+		}
+	}
+}
+
+
+struct Player {
+	char player_name [30];
+	int score;
+
+    Player(){
+		strcpy(player_name, "kabir");
+		score = 0;
+	}
+
+	
+	Player(char* pn, int _score)
+	  {
+		strcpy(player_name,pn);
+		score = _score;
+	  }
+
+	Player(char* pn1)
+	  {
+		strcpy(player_name,pn1);
+		score = 0;
+	  }
+
+	char* getPlayerName(){
+		return player_name;
+	}
+
+	void setPlayerName(char* _player_name){
+		strcpy(player_name, _player_name);
+	}
+
+	int getScore(){
+		return score;
+	}
+
+	void setScore(int _score){
+		score = _score;
+	}
+
+};
+
+Player winner[10];
+
+void read()
+{
+	//reading name and scores from the text file
+	FILE *fp = fopen("score.txt", "r");
+	for(int i=0; i<5; i++){
+		char s[30];
+		int sc;
+		fscanf(fp, "%s %d", s, &sc);
+		winner[i].setPlayerName(s);//putiing name in structure type array
+		winner[i].setScore(sc);////putiing score in structure type array
+	}
+	winner[5].setPlayerName(pname);
+		winner[5].setScore(point);
+
+	fclose(fp);
+	int temp;
+	
+	//bubble sorting the score in higher order
+	for(int i=0; i<6; i++){
+		for(int j=i+1; j<6; j++){
+			if(winner[i].getScore() <winner[j].getScore()){
+				/*swap(topPlayers[j].score ,topPlayers[j+1].score );
+				swap(topPlayers[j].player_name ,topPlayers[j+1].player_name);
+				*/
+				temp = winner[i].score ;
+				winner[i].score = winner[j].score ;
+				winner[j].score = temp;
+
+				strcpy(nameShow, winner[i].player_name);
+				strcpy(winner[i].player_name, winner[j].player_name);
+				strcpy(winner[j].player_name, nameShow);
+
+			}
+		}
+	}
+	
+ 
+
+
+}
+//showing name and score in the games score page
+
+
+void showable(){
+
+
+	
+	sprintf(nameShow, "%s", winner[0].getPlayerName());//will take playes name from winner array to s
+		iText(158, 350,nameShow, GLUT_BITMAP_TIMES_ROMAN_24);//will show players name in score page
+
+		sprintf(nameShow, "%d", winner[0].getScore());
+		iText(700, 350,nameShow, GLUT_BITMAP_TIMES_ROMAN_24);
+
+
+
+	sprintf(nameShow, "%s", winner[1].getPlayerName());
+		iText(158, 310, nameShow, GLUT_BITMAP_TIMES_ROMAN_24);
+
+		sprintf(nameShow, "%d", winner[1].getScore());
+		iText(700, 310,nameShow, GLUT_BITMAP_TIMES_ROMAN_24);
+
+	sprintf(nameShow, "%s", winner[2].getPlayerName());
+		iText(158, 270, nameShow, GLUT_BITMAP_TIMES_ROMAN_24);
+
+		sprintf(nameShow, "%d", winner[2].getScore());
+		iText(700, 270,nameShow, GLUT_BITMAP_TIMES_ROMAN_24);
+
+
+	sprintf(nameShow, "%s", winner[3].getPlayerName());
+		iText(158, 230, nameShow, GLUT_BITMAP_TIMES_ROMAN_24);
+
+		sprintf(nameShow, "%d", winner[3].getScore());
+		iText(700, 230,nameShow, GLUT_BITMAP_TIMES_ROMAN_24);
+
+
+
+	sprintf(nameShow, "%s", winner[4].getPlayerName());
+		iText(158, 190, nameShow, GLUT_BITMAP_TIMES_ROMAN_24);
+
+
+		sprintf(nameShow, "%d", winner[4].getScore());
+		iText(700, 190,nameShow, GLUT_BITMAP_TIMES_ROMAN_24);
+
+
+
+		sprintf(nameShow, "%s", winner[5].getPlayerName());//user input player name
+		iText(158, 150, nameShow, GLUT_BITMAP_TIMES_ROMAN_24);
+
+	    sprintf(nameShow, "%d", winner[5].getScore());//new player score
+		iText(700, 150, nameShow, GLUT_BITMAP_TIMES_ROMAN_24);
+
+}
+
+
+
+
+
+int main()
+{
+
+    read();
+	iInitialize(1200, 690, "Ghost Killer");
+	iSetTimer(15, ballchange);
+	//Ingame images::
+	image[0] = iLoadImage("images\\hni.jpg");
+	image[1] = iLoadImage("images\\wood.png");
+	image[2] = iLoadImage("images\\pumpkin.png");
+	image[3] = iLoadImage("images\\gameover.png");
+	//buttonimages
+	button[0] = iLoadImage("images\\button\\newgame.png");
+	button[1] = iLoadImage("images\\button\\highscore.png");
+	button[2] = iLoadImage("images\\button\\option.png");
+	button[3] = iLoadImage("images\\button\\about.png");
+	button[4] = iLoadImage("images\\button\\quit.png");
+	button[5] = iLoadImage("images\\button\\newgame2.png");
+	button[6] = iLoadImage("images\\button\\highscore2.png");
+	button[7] = iLoadImage("images\\button\\option2.png");
+	button[8] = iLoadImage("images\\button\\about2.png");
+	button[9] = iLoadImage("images\\button\\quit2.png");
+	//Page iMAGES:
+	menupage = iLoadImage("images\\main.png");
+	instructionpage = iLoadImage("images\\instruction.jpeg");
+	aboutpage = iLoadImage("images\\about.png");
+	iStart(); // it will start drawing
+	return 0;
+}
+
